@@ -3,7 +3,7 @@ import json
 import typer
 
 from secreta.constants import PASSWORDS_FILE
-from secreta.utils import auth_user, decrypt_from_service, encrypt_password, get_passwords
+from secreta.utils import auth_user, decrypt_from_service, encrypt_credentials, get_credentials
 
 app = typer.Typer()
 
@@ -11,8 +11,8 @@ app = typer.Typer()
 def set():
     """Set your secreta access password"""
     access_password = input("Set your secreta access password: ")
-    d = get_passwords()
-    encrypted = encrypt_password(access_password)
+    d = get_credentials()
+    encrypted = encrypt_credentials(access_password)
     d["access_password"] = {"password": encrypted["password"], "key": encrypted["key"]}
     with open(PASSWORDS_FILE, "w") as f:
         json.dump(d, f)
@@ -26,9 +26,9 @@ def new():
         service = input("Set the service you would like to add: ").lower()
         username = input("Set your service username: ")
         password = input("Set your service password: ")
-        encrypted = encrypt_password(password)
-        d = get_passwords()
-        d[service] = {"username": username, "password": encrypted["password"], "key": encrypted["key"]}
+        encrypted = encrypt_credentials(password, username)
+        d = get_credentials()
+        d[service] = {"username": encrypted["username"], "password": encrypted["password"], "key": encrypted["key"]}
         with open(PASSWORDS_FILE, "w") as f:
             json.dump(d, f)
         print(typer.style(f"Credentials for {service.capitalize()} set successfully!", fg=typer.colors.GREEN))
@@ -40,12 +40,12 @@ def new():
 def get(service: str):
     """Get credentials for a given service"""
     if auth_user():
-        d = get_passwords()
+        d = get_credentials()
         service = service.lower()
         username = d[service]["username"]
-        decrypted_password = decrypt_from_service(service)
-        print(typer.style(f"Username: {username}", fg=typer.colors.YELLOW))
-        print(typer.style(f"Password: {decrypted_password}", fg=typer.colors.YELLOW))
+        decrypted = decrypt_from_service(service)
+        print(typer.style(f"Username: {decrypted['username']}", fg=typer.colors.YELLOW))
+        print(typer.style(f"Password: {decrypted['password']}", fg=typer.colors.YELLOW))
     else:
         print(typer.style("Invalid access password!", fg=typer.colors.RED))
 
@@ -54,7 +54,7 @@ def get(service: str):
 def ls():
     """List all credentials added"""
     if auth_user():
-        d = get_passwords()
+        d = get_credentials()
         keys = d.keys()
         if len(keys) == 1:
             print(typer.style("No credentials added yet!", fg=typer.colors.RED))
