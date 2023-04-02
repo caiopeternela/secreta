@@ -6,7 +6,7 @@ authors = ["caiopeternela <caiopeternela.dev@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.scripts]
-secreta = "secreta.core:app"
+secreta = "secreta.commands:app"
 
 [tool.ruff]
 line-length = 120
