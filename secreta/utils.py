@@ -27,7 +27,7 @@ def encrypt_credentials(password: str, username: str = None) -> dict:
 def decrypt_from_service(service: str) -> dict:
     d = get_credentials()
     if d == {}:
-        return False
+        return {}
     key = d[service]["key"].encode()
     f = Fernet(key)
     data = {}
@@ -41,4 +41,4 @@ def decrypt_from_service(service: str) -> dict:
 
 def auth_user() -> bool:
     access_password = input("Enter your access password: ")
-    return access_password == decrypt_from_service("access_password")["password"]
+    return access_password == decrypt_from_service("access_password").get("password")

@@ -40,9 +40,7 @@ def new():
 def get(service: str):
     """Get credentials for a given service"""
     if auth_user():
-        d = get_credentials()
         service = service.lower()
-        username = d[service]["username"]
         decrypted = decrypt_from_service(service)
         print(typer.style(f"Username: {decrypted['username']}", fg=typer.colors.YELLOW))
         print(typer.style(f"Password: {decrypted['password']}", fg=typer.colors.YELLOW))
