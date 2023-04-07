@@ -54,8 +54,7 @@ def ls():
         typer.echo(typer.style("Invalid access password!", fg=typer.colors.RED))
         return
     d = get_credentials()
-    keys = d.keys()
-    if len(keys) == 1:
+    if len(d.keys()) == 1:
         typer.echo(typer.style("No credentials added yet!", fg=typer.colors.RED))
     for key in keys:
         if key != "access_password":

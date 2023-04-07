@@ -34,7 +34,7 @@ def encrypt_credentials(password: str, username: str = None) -> dict:
 def decrypt_from_service(service: str) -> dict:
     d = get_credentials()
     if d == {}:
-        return
+        return {}
     key = d[service]["key"].encode()
     f = Fernet(key)
     data = {}
