@@ -150,7 +150,7 @@ tox = ["tox"]
 name = "isort"
 version = "5.12.0"
 description = "A Python utility / library to sort Python imports."
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.8.0"
 files = [
@@ -180,7 +180,7 @@ files = [
 name = "ruff"
 version = "0.0.259"
 description = "An extremely fast Python linter, written in Rust."
-category = "main"
+category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -226,5 +226,5 @@ test = ["black (>=22.3.0,<23.0.0)", "coverage (>=6.2,<7.0)", "isort (>=5.0.6,<6.
 
 [metadata]
 lock-version = "2.0"
-python-versions = "^3.11"
-content-hash = "bbc005bce1d53c349aea2e253608af421d2948518cb3f28c21f85c1786d70baa"
+python-versions = "^3.8"
+content-hash = "dda493f8a883fe259167ef3783f07ea8a0310b48e3c6e4a38268a60b1c38e197"
