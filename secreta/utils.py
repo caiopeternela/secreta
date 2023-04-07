@@ -1,9 +1,15 @@
 import json
 import os
 
+import typer
 from cryptography.fernet import Fernet
 
 from secreta.constants import PASSWORDS_FILE
+
+
+def auth_user() -> bool:
+    access_password = typer.prompt("Enter your access password", hide_input=True)
+    return access_password == decrypt_from_service("access_password").get("password")
 
 
 def get_credentials() -> dict:
@@ -24,10 +30,11 @@ def encrypt_credentials(password: str, username: str = None) -> dict:
         data["username"] = f.encrypt(username.encode()).decode()
     return data
 
+
 def decrypt_from_service(service: str) -> dict:
     d = get_credentials()
     if d == {}:
-        return {}
+        return
     key = d[service]["key"].encode()
     f = Fernet(key)
     data = {}
@@ -39,6 +46,16 @@ def decrypt_from_service(service: str) -> dict:
     return data
 
 
-def auth_user() -> bool:
-    access_password = input("Enter your access password: ")
-    return access_password == decrypt_from_service("access_password").get("password")
+def input_manager(access_password=False):
+    data = {}
+    if not access_password:
+        service = typer.prompt("Set the service you would like to add").lower()
+        username = typer.prompt("Set your username")
+        data = {"service": service, "username": username}
+    password = typer.prompt("Set your password", hide_input=True)
+    confirmed_password = typer.prompt("Confirm your password", hide_input=True)
+    while password != confirmed_password:
+        typer.echo(typer.style("Error: The two entered values do not match.", fg=typer.colors.RED))
+        confirmed_password = typer.prompt("Confirm your password", hide_input=True)
+    data["password"] = password
+    return data
