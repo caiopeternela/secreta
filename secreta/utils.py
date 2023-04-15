@@ -7,8 +7,7 @@ from cryptography.fernet import Fernet
 from secreta.constants import PASSWORDS_FILE
 
 
-def auth_user() -> bool:
-    access_password = typer.prompt("Enter your access password", hide_input=True)
+def auth_user(access_password) -> bool:
     return access_password == decrypt_from_service("access_password").get("password")
 
 

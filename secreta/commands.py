@@ -13,8 +13,8 @@ def set():
     """Set your secreta access password"""
     access_password = input_manager(access_password=True).get("password")
     d = get_credentials()
-    encrypted = encrypt_credentials(access_password)
-    d["access_password"] = {"password": encrypted["password"], "key": encrypted["key"]}
+    encrypted_credentials = encrypt_credentials(access_password)
+    d.update(encrypted_credentials)
     with open(PASSWORDS_FILE, "w") as f:
         json.dump(d, f)
     typer.echo(typer.style("Access password set successfully!", fg=typer.colors.GREEN))
@@ -23,13 +23,14 @@ def set():
 @app.command()
 def new():
     """Add new credentials for a service"""
-    if not auth_user():
+    access_password = typer.prompt("Enter your access password", hide_input=True)
+    if not auth_user(access_password):
         typer.echo(typer.style("Invalid access password!", fg=typer.colors.RED))
         return
     service, username, password = input_manager().values()
-    encrypted = encrypt_credentials(password, username)
+    encrypted_credentials = encrypt_credentials(password, username)
     d = get_credentials()
-    d[service] = {"username": encrypted["username"], "password": encrypted["password"], "key": encrypted["key"]}
+    d.update(encrypted_credentials)
     with open(PASSWORDS_FILE, "w") as f:
         json.dump(d, f)
     typer.echo(typer.style(f"Credentials for {service.capitalize()} set successfully!", fg=typer.colors.GREEN))
@@ -38,7 +39,8 @@ def new():
 @app.command()
 def get(service: str):
     """Get credentials for a given service"""
-    if not auth_user():
+    access_password = typer.prompt("Enter your access password", hide_input=True)
+    if not auth_user(access_password):
         typer.echo(typer.style("Invalid access password!", fg=typer.colors.RED))
         return
     service = service.lower()
@@ -50,7 +52,8 @@ def get(service: str):
 @app.command()
 def ls():
     """List all credentials added"""
-    if not auth_user():
+    access_password = typer.prompt("Enter your access password", hide_input=True)
+    if not auth_user(access_password):
         typer.echo(typer.style("Invalid access password!", fg=typer.colors.RED))
         return
     d = get_credentials()
