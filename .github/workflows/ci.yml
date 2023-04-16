@@ -1,9 +1,9 @@
-name: CI
+name: ci
 on:
   push:
-    branches: [ "dev" ]
+    branches: ["dev"]
   pull_request:
-    branches: [ "dev" ]
+    branches: ["dev"]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -29,7 +29,7 @@ jobs:
           poetry run isort .
       - name: Test with pytest and coverage
         run: |
-          poetry run pytest --cov
+          poetry run pytest --cov secreta
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
         with:
