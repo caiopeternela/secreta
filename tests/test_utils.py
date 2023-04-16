@@ -1,23 +1,19 @@
 from unittest.mock import patch
 
 import pytest
-from faker import Faker
-from typer.testing import CliRunner
 
 from secreta.utils import auth_user, decrypt_from_service, encrypt_credentials
 
-fake = Faker()
-runner = CliRunner()
 
-def test_encryptation_and_decryptation():
-    service, username, password = fake.company(), fake.name(), fake.password()
-
-    mock_data = {service: encrypt_credentials(password, username)}
+@pytest.mark.parametrize("mock_data, expected_result", [
+    ({"typer": encrypt_credentials("fastapi123", "tiangolo")}, {"username": "tiangolo", "password": "fastapi123"}),
+    ({}, {})
+], ids=["with_credentials", "without_credentials"])
+def test_encryptation_and_decryptation(mock_data, expected_result):
     with patch("secreta.utils.get_credentials", return_value=mock_data):
-        decrypted_credentials = decrypt_from_service(service)
+        decrypted_credentials = decrypt_from_service("typer")
 
-    expected_credentials = {"username": username, "password": password}
-    assert expected_credentials == decrypted_credentials
+    assert expected_result == decrypted_credentials
 
 
 @pytest.mark.parametrize("correct_password, input_password, expected_output", [
