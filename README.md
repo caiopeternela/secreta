@@ -17,7 +17,7 @@ pip install secreta
 
 ```python
 secreta set # set your secreta access password
-secreta new # add new credentials for a serivce
+secreta new # add new credentials for a service
 secreta get # get credentials for a given service
 secreta ls # list all credentials added
 ```
