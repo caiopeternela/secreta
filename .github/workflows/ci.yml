@@ -21,11 +21,11 @@ jobs:
         uses: snok/install-poetry@v1
       - name: Install dependencies
         run: poetry install
-      - name: Lint with ruff & isort
+      - name: Run lint tools
         run: |
           poetry run ruff .
           poetry run isort .
-      - name: Test with pytest and coverage
+      - name: Run tests
         run: |
           poetry run pytest --cov secreta --cov-report=xml
       - name: Upload coverage reports to Codecov
